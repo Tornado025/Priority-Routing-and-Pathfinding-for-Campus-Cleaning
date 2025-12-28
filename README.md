@@ -1,4 +1,4 @@
-# RVCE Campus Cleaning Scheduler
+# Campus Cleaning Scheduler
 
 Priority-based job scheduling system for campus cleaning operations with intelligent worker assignment and pathfinding.
 
