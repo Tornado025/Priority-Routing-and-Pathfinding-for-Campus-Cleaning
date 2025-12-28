@@ -2,6 +2,7 @@
 *.o
 *.out
 campus
+campus_program
 campus_new
 campus_hash
 .vscode/
