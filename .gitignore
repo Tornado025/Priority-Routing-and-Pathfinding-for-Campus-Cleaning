@@ -1,0 +1,8 @@
+*.exe
+*.o
+*.out
+campus
+campus_new
+campus_hash
+.vscode/
+.vs/
