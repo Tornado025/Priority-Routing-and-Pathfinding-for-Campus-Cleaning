@@ -14,7 +14,7 @@ Priority-based job scheduling system for campus cleaning operations with intelli
 
 **Algorithms:**
 - Dijkstra's shortest path
-- Priority-based scheduling with aging
+- Priority-based scheduling with ageing
 - FIFO within same priority level
 
 ## Files
@@ -24,7 +24,6 @@ Priority-based job scheduling system for campus cleaning operations with intelli
 - `campus.h` - Data structures
 - `launcher.bat` - Windows launcher
 - `launcher.sh` - Mac/Linux launcher
-
 
 ## Installation
 
