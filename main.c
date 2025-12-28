@@ -50,7 +50,6 @@ int main() {
     
     print_header();
     printf("  [INFO] System initialized with Graph Map.\n");
-    printf("  [INFO] Workers: Ravi (Reception), Priya (Lobby), Kumar (Cafeteria)\n");
     printf("  [INFO] Please initialize routine jobs to begin.\n");
 
     while(1) {

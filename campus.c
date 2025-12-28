@@ -1,4 +1,5 @@
 #include "campus.h"
+#include "sample_data.h"
 
 int graph[MAX_NODES][MAX_NODES];
 char room_names[MAX_NODES][20];
@@ -6,28 +7,8 @@ Worker* worker_hashmap[HASH_SIZE];
 int worker_count = 0;
 
 void init_system() {
-    strcpy(room_names[0], "Reception");
-    strcpy(room_names[1], "Lobby");
-    strcpy(room_names[2], "Admin Office");
-    strcpy(room_names[3], "Cafeteria");
-    strcpy(room_names[4], "Chem Lab");
-    strcpy(room_names[5], "Classroom 101");
-
-    memset(graph, 0, sizeof(graph));
-    
-    graph[0][1] = graph[1][0] = 2;
-    graph[1][2] = graph[2][1] = 3;
-    graph[1][3] = graph[3][1] = 5;
-    graph[2][4] = graph[4][2] = 2;
-    graph[3][5] = graph[5][3] = 4;
-    graph[4][5] = graph[5][4] = 6;
-    
-    init_worker_hashmap();
-    worker_count = 0;
-    
-    add_worker(101, "Ravi", 0);
-    add_worker(102, "Priya", 1);
-    add_worker(103, "Kumar", 3);
+    addSampleRooms(room_names, graph);
+    addSampleWorkers(&worker_count);
 }
 
 void initPQ(PriorityQueue *pq) {
