@@ -1,6 +1,7 @@
 #include <string.h>
 #include "sample_data.h"
-#include "campus.h"
+#include "worker.h"
+#include "context.h"
 
 void addSampleRooms(char room_names[][20], int graph[][30]) {
     strcpy(room_names[0], "Kotak Lab");

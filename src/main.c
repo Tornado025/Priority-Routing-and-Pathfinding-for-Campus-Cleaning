@@ -1,4 +1,7 @@
 #include "campus.h"
+#include "priority_queue.h"
+#include <stdio.h>
+#include <string.h>
 
 void print_header() {
     printf("\n");
