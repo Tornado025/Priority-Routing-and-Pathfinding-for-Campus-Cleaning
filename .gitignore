@@ -5,6 +5,9 @@ campus
 campus_program
 campus_new
 campus_hash
+*.dylib
+*.so
+*.dll
 .vscode/
 .vs/
 build/
@@ -12,3 +15,5 @@ build/
 Makefile.ignore
 **/__pycache__/
 **/.DS_Store
+ignore
+.venv
