@@ -23,6 +23,7 @@ class Worker(ctypes.Structure):
         ("is_occupied", ctypes.c_int),
         ("is_busy", ctypes.c_int),
         ("jobs_completed", ctypes.c_int),
+        ("skill_type", ctypes.c_int),
         ("next", ctypes.c_void_p),
     ]
 
@@ -35,6 +36,7 @@ class Request(ctypes.Structure):
         ("arrival_time", ctypes.c_int),
         ("wait_count", ctypes.c_int),
         ("is_emergency", ctypes.c_int),
+        ("skill_required", ctypes.c_int),
         ("cause", ctypes.c_char * 100),
     ]
 
@@ -58,6 +60,7 @@ lib.enqueue.argtypes = [
     ctypes.c_int,
     ctypes.c_int,
     ctypes.c_int,
+    ctypes.c_int,
     ctypes.c_char_p,
 ]
 lib.enqueue.restype = None
@@ -65,13 +68,13 @@ lib.enqueue.restype = None
 lib.dequeue.argtypes = [ctypes.POINTER(PriorityQueue)]
 lib.dequeue.restype = Request
 
-lib.add_worker.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int]
+lib.add_worker.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
 lib.add_worker.restype = None
 
 lib.get_worker.argtypes = [ctypes.c_int]
 lib.get_worker.restype = ctypes.POINTER(Worker)
 
-lib.find_best_available_worker.argtypes = [ctypes.c_int]
+lib.find_best_available_worker.argtypes = [ctypes.c_int, ctypes.c_int]
 lib.find_best_available_worker.restype = ctypes.c_int
 
 lib.init_routine_jobs.argtypes = [ctypes.POINTER(PriorityQueue)]
@@ -79,6 +82,7 @@ lib.init_routine_jobs.restype = None
 
 lib.add_emergency_job.argtypes = [
     ctypes.POINTER(PriorityQueue),
+    ctypes.c_int,
     ctypes.c_int,
     ctypes.c_int,
     ctypes.c_char_p,

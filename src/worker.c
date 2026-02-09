@@ -40,7 +40,7 @@ void get_all_workers(Worker **workers_array, int *count) {
     }
 }
 
-void add_worker(int id, char *name, int start_room) {
+void add_worker(int id, char *name, int start_room, int skill_type) {
     if (worker_count >= MAX_WORKERS) {
         printf("   [!] Maximum workers reached.\n");
         return;
@@ -52,6 +52,7 @@ void add_worker(int id, char *name, int start_room) {
     new_worker->is_occupied = 1;
     new_worker->is_busy = 0;
     new_worker->jobs_completed = 0;
+    new_worker->skill_type = skill_type;
     new_worker->next = NULL;
     int index = hash_function(id);
     if (worker_hashmap[index] == NULL) {
@@ -67,13 +68,17 @@ void add_worker(int id, char *name, int start_room) {
     printf("   [+] Worker '%s' (ID %d) added at %s.\n", name, id, room_names[start_room]);
 }
 
-int find_best_available_worker(int target_room) {
+int find_best_available_worker(int target_room, int skill_required) {
     int best_worker_id = -1;
     int min_score = INF;
     for (int i = 0; i < HASH_SIZE; i++) {
         Worker *current = worker_hashmap[i];
         while (current != NULL) {
             if (!current->is_occupied || current->is_busy) {
+                current = current->next;
+                continue;
+            }
+            if ((current->skill_type & skill_required) != skill_required) {
                 current = current->next;
                 continue;
             }

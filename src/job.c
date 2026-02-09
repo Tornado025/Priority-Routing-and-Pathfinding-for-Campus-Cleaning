@@ -4,24 +4,24 @@
 void init_routine_jobs(PriorityQueue *pq) {
     printf("\n  [SETUP] Initializing routine cleaning schedule...\n");
     printf("  [INFO] Priority-based round robin with workload balancing.\n");
-    enqueue(pq, 0, 3, 0, "Routine Kotak Lab cleaning");
-    enqueue(pq, 1, 5, 0, "Routine CV Block cleaning");
-    enqueue(pq, 2, 5, 0, "Routine EC Block cleaning");
-    enqueue(pq, 3, 5, 0, "Routine EE Block cleaning");
-    enqueue(pq, 4, 4, 0, "Routine Admin Block cleaning");
-    enqueue(pq, 5, 5, 0, "Routine CS Block cleaning");
-    enqueue(pq, 6, 3, 0, "Routine Ground maintenance");
-    enqueue(pq, 7, 5, 0, "Routine ET Block cleaning");
-    enqueue(pq, 8, 5, 0, "Routine Chem Block cleaning");
-    enqueue(pq, 9, 6, 0, "Routine Canteen sanitation");
-    enqueue(pq, 10, 5, 0, "Routine BT Quadrangle cleaning");
-    enqueue(pq, 11, 5, 0, "Routine Mech Block cleaning");
-    enqueue(pq, 12, 5, 0, "Routine IEM Block cleaning");
+    enqueue(pq, 0, 3, 0, 1, "Routine Kotak Lab cleaning");
+    enqueue(pq, 1, 5, 0, 1, "Routine CV Block cleaning");
+    enqueue(pq, 2, 5, 0, 1, "Routine EC Block cleaning");
+    enqueue(pq, 3, 5, 0, 1, "Routine EE Block cleaning");
+    enqueue(pq, 4, 4, 0, 9, "Routine Admin Block cleaning");
+    enqueue(pq, 5, 5, 0, 1, "Routine CS Block cleaning");
+    enqueue(pq, 6, 3, 0, 1, "Routine Ground maintenance");
+    enqueue(pq, 7, 5, 0, 1, "Routine ET Block cleaning");
+    enqueue(pq, 8, 5, 0, 3, "Routine Chem Block cleaning");
+    enqueue(pq, 9, 6, 0, 5, "Routine Canteen sanitation");
+    enqueue(pq, 10, 5, 0, 1, "Routine BT Quadrangle cleaning");
+    enqueue(pq, 11, 5, 0, 1, "Routine Mech Block cleaning");
+    enqueue(pq, 12, 5, 0, 1, "Routine IEM Block cleaning");
     printf("  [OK] Routine jobs initialized. These will cycle automatically.\n");
 }
 
-void add_emergency_job(PriorityQueue *pq, int room_id, int priority, char *cause) {
-    enqueue(pq, room_id, priority, 1, cause);
+void add_emergency_job(PriorityQueue *pq, int room_id, int priority, int skill_required, char *cause) {
+    enqueue(pq, room_id, priority, 1, skill_required, cause);
 }
 
 void update_job_priorities(PriorityQueue *pq) {

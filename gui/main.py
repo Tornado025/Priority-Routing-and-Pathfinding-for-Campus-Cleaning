@@ -11,7 +11,7 @@ from bindings import (
     room_names,
 )
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QFont, QPainter, QPen
+from PySide6.QtGui import QColor, QFont, QIntValidator, QPainter, QPen
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -157,6 +157,21 @@ class RequestCard(QFrame):
         )
         layout.addWidget(room_label)
 
+        skill_names = []
+        if req.skill_required & 1:
+            skill_names.append("Janitor")
+        if req.skill_required & 2:
+            skill_names.append("Security")
+        if req.skill_required & 4:
+            skill_names.append("Manager")
+        if req.skill_required & 8:
+            skill_names.append("Admin")
+        skill_label = QLabel(f"Skills: {'+'.join(skill_names)}")
+        skill_label.setStyleSheet(
+            f"color: {TEXT_LIGHT}; font-family: 'Helvetica Neue'; font-size: 11px;"
+        )
+        layout.addWidget(skill_label)
+
         stats = QLabel(
             f"Priority: {req.priority} → {req.effective_priority}  •  Waited: {req.wait_count} cycles"
         )
@@ -189,8 +204,8 @@ class WorkerHashmapWidget(QWidget):
         layout.addWidget(header)
 
         self.table = QTableWidget()
-        self.table.setColumnCount(5)
-        self.table.setHorizontalHeaderLabels(["ID", "Name", "Room", "Occupied", "Jobs"])
+        self.table.setColumnCount(6)
+        self.table.setHorizontalHeaderLabels(["ID", "Name", "Room", "Skills", "Occupied", "Jobs"])
         self.table.setStyleSheet(
             f"""
             QTableWidget {{
@@ -246,10 +261,21 @@ class WorkerHashmapWidget(QWidget):
                     room_display = "-"
                 self.table.setItem(i, 2, QTableWidgetItem(room_display))
 
+                skill_names = []
+                if w.skill_type & 1:
+                    skill_names.append("J")
+                if w.skill_type & 2:
+                    skill_names.append("S")
+                if w.skill_type & 4:
+                    skill_names.append("M")
+                if w.skill_type & 8:
+                    skill_names.append("A")
+                self.table.setItem(i, 3, QTableWidgetItem("+".join(skill_names)))
+
                 self.table.setItem(
-                    i, 3, QTableWidgetItem("Yes" if w.is_occupied else "No")
+                    i, 4, QTableWidgetItem("Yes" if w.is_occupied else "No")
                 )
-                self.table.setItem(i, 4, QTableWidgetItem(str(w.jobs_completed)))
+                self.table.setItem(i, 5, QTableWidgetItem(str(w.jobs_completed)))
 
 
 class PriorityQueueWidget(QWidget):
@@ -485,6 +511,8 @@ class MainWindow(QMainWindow):
         self.room_input = QLineEdit()
         self.room_input.setPlaceholderText("0")
         self.room_input.setMinimumHeight(36)
+        self.room_input.setMaximumWidth(80)
+        self.room_input.setValidator(QIntValidator(0, 12))
         self.room_input.setStyleSheet(self._input_style())
         room_container.addWidget(room_label)
         room_container.addWidget(self.room_input)
@@ -498,10 +526,27 @@ class MainWindow(QMainWindow):
         self.prio_input = QLineEdit()
         self.prio_input.setPlaceholderText("9")
         self.prio_input.setMinimumHeight(36)
+        self.prio_input.setMaximumWidth(90)
+        self.prio_input.setValidator(QIntValidator(9, 10))
         self.prio_input.setStyleSheet(self._input_style())
         prio_container.addWidget(prio_label)
         prio_container.addWidget(self.prio_input)
         inputs_row.addLayout(prio_container)
+
+        skill_container = QVBoxLayout()
+        skill_label = QLabel("Skill (1-15)")
+        skill_label.setStyleSheet(
+            f"color: {TEXT_LIGHT}; font-family: 'Helvetica Neue'; font-size: 12px;"
+        )
+        self.skill_input = QLineEdit()
+        self.skill_input.setPlaceholderText("1")
+        self.skill_input.setMinimumHeight(36)
+        self.skill_input.setMaximumWidth(80)
+        self.skill_input.setValidator(QIntValidator(1, 15))
+        self.skill_input.setStyleSheet(self._input_style())
+        skill_container.addWidget(skill_label)
+        skill_container.addWidget(self.skill_input)
+        inputs_row.addLayout(skill_container)
 
         cause_container = QVBoxLayout()
         cause_label = QLabel("Cause")
@@ -517,6 +562,16 @@ class MainWindow(QMainWindow):
         inputs_row.addLayout(cause_container, 1)
 
         emergency_layout.addLayout(inputs_row)
+
+        skill_help = QLabel(
+            "Skills:\n"
+            "  1 = Janitor    2 = Security    4 = Manager    8 = Admin\n"
+            "  Add numbers for multiple skills (e.g., 9 = Janitor + Admin)"
+        )
+        skill_help.setStyleSheet(
+            f"color: {TEXT_LIGHT}; font-family: 'Helvetica Neue'; font-size: 11px; padding: 8px 0px; line-height: 1.5;"
+        )
+        emergency_layout.addWidget(skill_help)
 
         btn_emg = QPushButton("Add Emergency")
         btn_emg.setMinimumHeight(40)
@@ -601,14 +656,20 @@ class MainWindow(QMainWindow):
             priority = max(9, min(10, priority))
         except ValueError:
             priority = 9
+        try:
+            skill = int(self.skill_input.text() or "1")
+            skill = max(1, min(15, skill))
+        except ValueError:
+            skill = 1
         cause = self.cause_input.text() or "Emergency"
         lib.add_emergency_job(
-            ctypes.byref(self.pq), room, priority, cause.encode("utf-8")
+            ctypes.byref(self.pq), room, priority, skill, cause.encode("utf-8")
         )
         room_name = bytes(room_names[room]).decode("utf-8").rstrip("\x00")
         self.log_msg(f"Added emergency: Room {room} ({room_name})")
         self.room_input.clear()
         self.prio_input.clear()
+        self.skill_input.clear()
         self.cause_input.clear()
         self.refresh_ui()
 
@@ -621,15 +682,16 @@ class MainWindow(QMainWindow):
             return
 
         room_name = bytes(room_names[req.room_id]).decode("utf-8").rstrip("\x00")
-        worker_id = lib.find_best_available_worker(req.room_id)
+        worker_id = lib.find_best_available_worker(req.room_id, req.skill_required)
 
         if worker_id == -1:
-            self.log_msg("No workers available, re-queued")
+            self.log_msg("No workers with required skills, re-queued")
             lib.enqueue(
                 ctypes.byref(self.pq),
                 req.room_id,
                 req.priority,
                 req.is_emergency,
+                req.skill_required,
                 req.cause,
             )
         else:
@@ -640,7 +702,7 @@ class MainWindow(QMainWindow):
             worker.jobs_completed += 1
             if not req.is_emergency:
                 lib.enqueue(
-                    ctypes.byref(self.pq), req.room_id, req.priority, 0, req.cause
+                    ctypes.byref(self.pq), req.room_id, req.priority, 0, req.skill_required, req.cause
                 )
         self.refresh_ui()
 

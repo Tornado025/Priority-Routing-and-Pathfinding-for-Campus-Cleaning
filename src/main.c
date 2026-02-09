@@ -75,7 +75,7 @@ int main() {
             }
             
             case 2: {
-                int r_id, prio;
+                int r_id, prio, skill;
                 char cause[100];
                 
                 printf("\n  === EMERGENCY JOB ===\n");
@@ -85,15 +85,16 @@ int main() {
                 printf("  8:Chem Block, 9:Canteen, 10:BT Quad, 11:Mech, 12:IEM\n");
                 printf("  Room ID (0-12): "); scanf("%d", &r_id);
                 printf("  Priority (9-10 for emergencies): "); scanf("%d", &prio);
+                printf("  Skill (1:Janitor, 2:Security, 4:Manager, 8:Admin, or sum): "); scanf("%d", &skill);
                 printf("  Cause/Description: ");
                 getchar();
                 fgets(cause, sizeof(cause), stdin);
                 cause[strcspn(cause, "\n")] = 0;
                 
-                if(r_id >= 0 && r_id < 13 && prio >= 9 && prio <= 10) {
-                    add_emergency_job(&job_queue, r_id, prio, cause);
+                if(r_id >= 0 && r_id < 13 && prio >= 9 && prio <= 10 && skill > 0) {
+                    add_emergency_job(&job_queue, r_id, prio, skill, cause);
                 } else {
-                    printf("  [!] Invalid input. Room must be 0-12, Priority 9-10.\n");
+                    printf("  [!] Invalid input. Room must be 0-12, Priority 9-10, Skill > 0.\n");
                 }
                 break;
             }
@@ -117,11 +118,11 @@ int main() {
                     printf("  Priority: Base=%d, Effective=%d (waited %d cycles)\n", 
                            req.priority, req.effective_priority, req.wait_count);
                     
-                    int worker_id = find_best_available_worker(req.room_id);
+                    int worker_id = find_best_available_worker(req.room_id, req.skill_required);
                     
                     if (worker_id == -1) {
-                        printf("  [!] No available workers (all busy). Job re-queued.\n");
-                        enqueue(&job_queue, req.room_id, req.priority, req.is_emergency, req.cause);
+                        printf("  [!] No workers with required skills available. Job re-queued.\n");
+                        enqueue(&job_queue, req.room_id, req.priority, req.is_emergency, req.skill_required, req.cause);
                     } else {
                         Worker *assigned = get_worker(worker_id);
                         printf("  [ASSIGNED] Worker: %s (ID %d)\n", assigned->name, assigned->worker_id);
@@ -142,7 +143,7 @@ int main() {
                             printf("  [RESOLVED] Emergency cleared.\n");
                         } else {
                             printf("  [CYCLE] Routine job re-queued for next cycle.\n");
-                            enqueue(&job_queue, req.room_id, req.priority, 0, req.cause);
+                            enqueue(&job_queue, req.room_id, req.priority, 0, req.skill_required, req.cause);
                         }
                     }
                     printf("  ==========================================\n");

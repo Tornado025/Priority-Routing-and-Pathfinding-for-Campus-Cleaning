@@ -13,7 +13,7 @@ typedef struct {
 } PriorityQueue;
 
 void initPQ(PriorityQueue *pq);
-void enqueue(PriorityQueue *pq, int room_id, int priority, int is_emergency, char *cause);
+void enqueue(PriorityQueue *pq, int room_id, int priority, int is_emergency, int skill_required, char *cause);
 Request dequeue(PriorityQueue *pq);
 void swap(Request *a, Request *b);
 int is_higher_priority(Request a, Request b);

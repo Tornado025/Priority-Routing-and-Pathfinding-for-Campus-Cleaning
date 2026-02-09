@@ -8,6 +8,7 @@ typedef struct Worker {
     int is_occupied;
     int is_busy;
     int jobs_completed;
+    int skill_type;
     struct Worker *next;
 } Worker;
 
@@ -18,6 +19,7 @@ typedef struct {
     int arrival_time;
     int wait_count;
     int is_emergency;
+    int skill_required;
     char cause[100];
 } Request;
 

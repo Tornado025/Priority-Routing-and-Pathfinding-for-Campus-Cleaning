@@ -21,7 +21,7 @@ void initPQ(PriorityQueue *pq) {
     pq->counter = 0;
 }
 
-void enqueue(PriorityQueue *pq, int room_id, int priority, int is_emergency, char *cause) {
+void enqueue(PriorityQueue *pq, int room_id, int priority, int is_emergency, int skill_required, char *cause) {
     if (pq->size >= MAX_REQUESTS) {
         printf("   [!] Queue Full\n");
         return;
@@ -31,6 +31,7 @@ void enqueue(PriorityQueue *pq, int room_id, int priority, int is_emergency, cha
     pq->data[i].priority = priority;
     pq->data[i].effective_priority = priority;
     pq->data[i].is_emergency = is_emergency;
+    pq->data[i].skill_required = skill_required;
     pq->data[i].arrival_time = ++pq->counter;
     pq->data[i].wait_count = 0;
     strcpy(pq->data[i].cause, cause);
@@ -46,7 +47,7 @@ void enqueue(PriorityQueue *pq, int room_id, int priority, int is_emergency, cha
 }
 
 Request dequeue(PriorityQueue *pq) {
-    Request empty = {-1, -1, -1, -1, 0, 0, ""};
+    Request empty = {-1, -1, -1, -1, 0, 0, 0, ""};
     if (pq->size <= 0)
         return empty;
     if (pq->size == 1) {

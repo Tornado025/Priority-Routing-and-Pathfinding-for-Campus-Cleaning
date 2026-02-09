@@ -59,12 +59,12 @@ void addSampleWorkers(int *worker_count) {
     init_worker_hashmap();
     *worker_count = 0;
     
-    add_worker(101, "A", 0);   // Kotak Lab
-    add_worker(102, "B", 1);   // CV Block
-    add_worker(103, "C", 2);   // EC Block
-    add_worker(104, "D", 3);   // EE Block
-    add_worker(105, "E", 4);   // Admin Block
-    add_worker(106, "F", 8);   // Chem Block
-    add_worker(107, "G", 10);  // BT Quadrangle
-    add_worker(108, "H", 11);  // Mech Block
+    add_worker(101, "A", 0, 1);
+    add_worker(102, "B", 1, 1);
+    add_worker(103, "C", 2, 15);
+    add_worker(104, "D", 3, 1);
+    add_worker(105, "E", 4, 13);
+    add_worker(106, "F", 8, 1);
+    add_worker(107, "G", 10, 5);
+    add_worker(108, "H", 11, 1);
 }
