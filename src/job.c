@@ -4,12 +4,19 @@
 void init_routine_jobs(PriorityQueue *pq) {
     printf("\n  [SETUP] Initializing routine cleaning schedule...\n");
     printf("  [INFO] Priority-based round robin with workload balancing.\n");
-    enqueue(pq, 0, 3, 0, "Routine reception cleaning");
-    enqueue(pq, 1, 5, 0, "Routine lobby maintenance");
-    enqueue(pq, 2, 5, 0, "Routine office cleaning");
-    enqueue(pq, 3, 7, 0, "Routine cafeteria sanitation");
-    enqueue(pq, 4, 7, 0, "Routine lab cleaning");
-    enqueue(pq, 5, 5, 0, "Routine classroom cleaning");
+    enqueue(pq, 0, 3, 0, "Routine Kotak Lab cleaning");
+    enqueue(pq, 1, 5, 0, "Routine CV Block cleaning");
+    enqueue(pq, 2, 5, 0, "Routine EC Block cleaning");
+    enqueue(pq, 3, 5, 0, "Routine EE Block cleaning");
+    enqueue(pq, 4, 4, 0, "Routine Admin Block cleaning");
+    enqueue(pq, 5, 5, 0, "Routine CS Block cleaning");
+    enqueue(pq, 6, 3, 0, "Routine Ground maintenance");
+    enqueue(pq, 7, 5, 0, "Routine ET Block cleaning");
+    enqueue(pq, 8, 5, 0, "Routine Chem Block cleaning");
+    enqueue(pq, 9, 6, 0, "Routine Canteen sanitation");
+    enqueue(pq, 10, 5, 0, "Routine BT Quadrangle cleaning");
+    enqueue(pq, 11, 5, 0, "Routine Mech Block cleaning");
+    enqueue(pq, 12, 5, 0, "Routine IEM Block cleaning");
     printf("  [OK] Routine jobs initialized. These will cycle automatically.\n");
 }
 

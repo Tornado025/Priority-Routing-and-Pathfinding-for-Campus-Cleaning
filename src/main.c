@@ -79,18 +79,21 @@ int main() {
                 char cause[100];
                 
                 printf("\n  === EMERGENCY JOB ===\n");
-                printf("  Rooms: 0:Reception, 1:Lobby, 2:Office, 3:Cafe, 4:Lab, 5:Class\n");
-                printf("  Room ID (0-5): "); scanf("%d", &r_id);
+                printf("  Available Rooms:\n");
+                printf("  0:Kotak Lab, 1:CV Block, 2:EC Block, 3:EE Block\n");
+                printf("  4:Admin Block, 5:CS Block, 6:Ground, 7:ET Block\n");
+                printf("  8:Chem Block, 9:Canteen, 10:BT Quad, 11:Mech, 12:IEM\n");
+                printf("  Room ID (0-12): "); scanf("%d", &r_id);
                 printf("  Priority (9-10 for emergencies): "); scanf("%d", &prio);
                 printf("  Cause/Description: ");
                 getchar();
                 fgets(cause, sizeof(cause), stdin);
                 cause[strcspn(cause, "\n")] = 0;
                 
-                if(r_id >= 0 && r_id < 6 && prio >= 9 && prio <= 10) {
+                if(r_id >= 0 && r_id < 13 && prio >= 9 && prio <= 10) {
                     add_emergency_job(&job_queue, r_id, prio, cause);
                 } else {
-                    printf("  [!] Invalid input. Emergency priority must be 9-10.\n");
+                    printf("  [!] Invalid input. Room must be 0-12, Priority 9-10.\n");
                 }
                 break;
             }

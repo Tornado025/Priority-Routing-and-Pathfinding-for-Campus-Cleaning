@@ -18,7 +18,11 @@ SRCS = $(wildcard src/*.c)
 OBJS = $(patsubst src/%.c, build/%.o, $(SRCS))
 
 directories:
+ifeq ($(OS), Windows_NT)
+	if not exist build mkdir build
+else
 	mkdir -p build
+endif
 
 all: directories $(TARGET)
 
@@ -29,4 +33,9 @@ build/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
+ifeq ($(OS), Windows_NT)
+	if exist build rmdir /s /q build
+	if exist $(TARGET) del $(TARGET)
+else
 	rm -rf build $(TARGET)
+endif

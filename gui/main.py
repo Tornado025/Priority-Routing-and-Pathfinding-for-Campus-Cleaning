@@ -51,16 +51,21 @@ class GraphWidget(QWidget):
         self.nodes.clear()
         self.edges.clear()
         positions = {
-            0: (100, 180),
-            1: (160, 120),
-            2: (280, 80),
-            3: (220, 180),
-            4: (50, 260),
-            5: (280, 260),
-            6: (160, 320),
-            7: (340, 120),
+            6: (80, 40),      # Ground
+            0: (40, 140),     # Kotak Lab
+            4: (40, 240),     # Admin Block
+            5: (190, 50),     # CS Block
+            1: (125, 140),    # CV Block
+            11: (125, 325),   # Mech Block (moved down for -45° angle with Admin)
+            3: (300, 60),     # EE Block (top of triangle)
+            12: (210, 260),   # IEM Block (adjusted slightly)
+            10: (210, 340),   # BT Quadrangle
+            2: (220, 150),    # EC Block (bottom left of triangle)
+            9: (295, 340),    # Canteen
+            7: (380, 150),    # ET Block (bottom right of triangle)
+            8: (380, 240),    # Chem Block
         }
-        for i in range(8):
+        for i in range(13):
             name = bytes(room_names[i]).decode("utf-8").rstrip("\x00")
             if name:
                 self.nodes[i] = {"name": name, "pos": positions.get(i, (200, 200))}
@@ -473,7 +478,7 @@ class MainWindow(QMainWindow):
         inputs_row.setSpacing(12)
 
         room_container = QVBoxLayout()
-        room_label = QLabel("Room (0-7)")
+        room_label = QLabel("Room (0-12)")
         room_label.setStyleSheet(
             f"color: {TEXT_LIGHT}; font-family: 'Helvetica Neue'; font-size: 12px;"
         )
@@ -582,13 +587,13 @@ class MainWindow(QMainWindow):
 
     def init_routine(self):
         lib.init_routine_jobs(ctypes.byref(self.pq))
-        self.log_msg("Initialized 6 routine jobs")
+        self.log_msg("Initialized 13 routine jobs")
         self.refresh_ui()
 
     def add_emergency(self):
         try:
             room = int(self.room_input.text() or "0")
-            room = max(0, min(7, room))
+            room = max(0, min(12, room))
         except ValueError:
             room = 0
         try:
