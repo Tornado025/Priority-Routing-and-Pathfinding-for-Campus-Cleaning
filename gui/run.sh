@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$(dirname "$0")/.."
-make -f Makefile.shared all
+cd ..
+make -f Makefile all
 cd gui
 python3 main.py
